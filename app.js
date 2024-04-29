@@ -6,7 +6,7 @@ const csrf = require("csurf");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const cors = require("cors");
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 
 const User = require("./models/user");
 
@@ -24,13 +24,15 @@ const apiOrderRoutes = require("./api/routes/orders");
 const app = express();
 app.use(express.json());
 
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'PATCH'],
-  allowedHeaders: '*',
-}));
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "PATCH"],
+    allowedHeaders: "*",
+  })
+);
 
-app.options('*', cors());
+app.options("*", cors());
 const store = new MySQLStore({
   host: "localhost",
   port: 3306,
@@ -39,7 +41,7 @@ const store = new MySQLStore({
 });
 app.use(cookieParser());
 const csrfProtection = csrf({
-  cookie:true
+  cookie: true,
 });
 
 const fileStorage = multer.diskStorage({
@@ -83,7 +85,6 @@ app.use(
 );
 app.use("/api/orders", apiOrderRoutes);
 
-
 app.use(csrfProtection);
 
 app.use((req, res, next) => {
@@ -106,12 +107,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/api/token', (req, res) => {
+app.get("/api/token", (req, res) => {
   const csrfToken = req.csrfToken();
-  res.status(201).json({csrfToken});
+  res.status(201).json({ csrfToken });
 });
-
-
 
 // app.use((req, res, next) => {
 //   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -119,7 +118,6 @@ app.get('/api/token', (req, res) => {
 //   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 //   next();
 // });
-
 
 app.use("/admin", adminRoutes);
 app.use("/deal", dealRoutes);
@@ -146,9 +144,10 @@ app.use(errorController.get404);
 const connectToDatabase = async () => {
   try {
     await sequelize.sync({ force: false });
+    const PORT = process.env.PORT || 8080;
 
-    app.listen(8080, () => {
-      console.log("Server running");
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
   } catch (err) {
     console.log(err);
