@@ -1,0 +1,46 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/cart.css">
+
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main>
+            <% if (orders.length <= 0) { %>
+                <h1>Nothing there!</h1>
+            <% } else { %>
+                <ul class="cart__item-list">
+                    <% orders.forEach(order => { %>
+                        <li class="cart__item">
+                            <h1>Order ID no<%= order.id %></h1>
+                            <ul>
+                                <% const userObj = JSON.parse(order.user); %>
+                                <% for (const key in userObj) { %>
+                                  <h1><%= key %>: <%= userObj[key] %></h1>
+                                <% } %>
+                              </ul>
+                              <ul>
+                                <% const orderedItemsObj = JSON.parse(order.orderedItems); %>
+                                <% for (const key in orderedItemsObj) { %>
+                                    <ul>
+                                        <% for (const itemKey in orderedItemsObj[key]) { %>
+                                          <% if (itemKey !== 'image') { %> <!-- Exclude the 'image' property -->
+                                            <li><%= orderedItemsObj[key][itemKey] %></li>
+                                          <% } %>
+                                        <% } %>
+                                      </ul>
+                               
+                                <% } %>
+                              </ul>
+                              </ul>
+                              <form action="/order-delete-item" method="POST">
+                                <input type="hidden" value="<%= order.id %>" name="orderId">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                <button class="btn danger" type="submit">Checkout</button>
+                            </form>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } %>
+        </main>
+        <%- include('../includes/end.ejs') %>

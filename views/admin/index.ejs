@@ -1,0 +1,40 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+    <% include('../includes/navigation.ejs') %>
+    <main>
+        <% if (deals.length > 0) { %>
+        <div class="grid">
+            <% for (let deal of deals) { %>
+            <article class="card product-item">
+                <header class="card__header">
+                    <h1 class="product__title">
+                        <%= deal.title %>
+                    </h1>
+                </header>
+                <div class="card__image">
+                    <img src="/<%= deal.image %>" alt="<%= deal.title %>">
+                </div>
+                <div class="card__content">
+                    <h2 class="product__price">$<%= deal.price %></h2>
+                    <p class="product__description"><%= deal.category %></p>
+                </div>
+                <div class="card__actions">
+                    <a href="/admin/edit-deal/<%= deal.id %>?edit=true" class="btn">Edit</a>
+                    <form action="/admin/delete-deal" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" value="<%= deal.id %>" name="dealId">
+                        <button class="btn" type="submit">Delete</button>
+                    </form>
+                </div>
+            </article>
+            <% } %>
+        </div>
+        <% } else { %>
+        <h1>No Deals Found!</h1>
+        <% } %>
+    </main>
+</body>
+</html>
